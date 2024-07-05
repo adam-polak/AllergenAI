@@ -1,7 +1,36 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<MudGrid Spacing="@Spacing" Justify="Justify.Center">
+    <MudItem>
+        <MudPaper Class="pa-4">
+            <MudStack Spacing="2">
+                <MudButton OnClick="OnExpandCollapseClick">
+                    @if(_expanded) @hideAllergens
+                    else @viewAllergens                     
+                </MudButton>
+                <MudDivider />
+                <MudCollapse Expanded="_expanded" class="text-center">
+                        **No Allergens Added Yet**
+                </MudCollapse>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+    <MudItem>
+        <MudPaper height="500px" width="500px">
+            <MudTextField @bind-Value="FoodItem" Label="Food name" Variant="Variant.Text"></MudTextField>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
-<h1>Hello, world!</h1>
+@code {
+    public string FoodItem { get; set; }
+    public int Spacing { get; set; } = 6;
+    string hideAllergens = "Hide Allergens";
+    string viewAllergens = "View Allergens";
+    bool _expanded = true;
 
-Welcome to your new app.
+    private void OnExpandCollapseClick() {
+        _expanded = !_expanded;
+    }
+}

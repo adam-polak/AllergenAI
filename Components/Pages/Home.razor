@@ -1,27 +1,21 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 
-<MudGrid Spacing="@Spacing" Justify="Justify.Center">
-    <MudItem>
-        <MudPaper Class="pa-4">
-            <MudStack Spacing="2">
-                <MudButton OnClick="OnExpandCollapseClick">
-                    @if(_expanded) @hideAllergens
-                    else @viewAllergens                     
-                </MudButton>
-                <MudDivider />
-                <MudCollapse Expanded="_expanded" class="text-center">
-                        **No Allergens Added Yet**
-                </MudCollapse>
-            </MudStack>
-        </MudPaper>
-    </MudItem>
-    <MudItem>
-        <MudPaper height="500px" width="500px">
-            <MudTextField @bind-Value="FoodItem" Label="Food name" Variant="Variant.Text"></MudTextField>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+
+<MudPaper Class="pa-4" Width="200px" style="margin-left:20px;margin-right:0px;">
+    <MudStack Spacing="2">
+        <MudButton OnClick="OnExpandCollapseClick">
+            @if(_expanded) @hideAllergens
+            else @viewAllergens                     
+        </MudButton>
+        <MudDivider />
+        <MudCollapse Expanded="_expanded" class="text-center">
+                **No Allergens Added Yet**
+        </MudCollapse>
+    </MudStack>
+</MudPaper>
+
+<MudTextField ShrinkLabel @bind-Value="FoodItem" HelperText="Check if food contains allergens" Variant="Variant.Text"></MudTextField>
 
 @code {
     public string FoodItem { get; set; }

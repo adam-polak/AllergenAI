@@ -1,30 +1,44 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 
+<MudGrid Justify="Justify.Center" Spacing="0" class="text-center">
 
-<MudPaper Class="pa-4" Width="200px" style="margin-left:20px;margin-right:0px;">
-    <MudStack Spacing="2">
-        <MudButton OnClick="OnExpandCollapseClick">
-            @if(_expanded) @hideAllergens
-            else @viewAllergens                     
-        </MudButton>
-        <MudDivider />
-        <MudCollapse Expanded="_expanded" class="text-center">
-                **No Allergens Added Yet**
-        </MudCollapse>
-    </MudStack>
-</MudPaper>
+    @if(_drawerOpen)
+    {
+        <MudItem>
+            <MudButton Variant="Variant.Filled" @onclick="DrawerToggle" Style="@($"background-color:{Colors.Pink.Lighten5};")">Close Allergen List</MudButton>
+            <br>
+            <br>
+            <MudButton Variant="Variant.Filled" @onclick="DrawerToggle" Style="@($"background-color:{Colors.LightGreen.Lighten3};")">Add Allergen</MudButton>
+            <br>
+            <table class="table">
+                <th>Allergens</th>
+            </table>
+        </MudItem>
+    }
 
-<MudTextField ShrinkLabel @bind-Value="FoodItem" HelperText="Check if food contains allergens" Variant="Variant.Text"></MudTextField>
+    <MudGrid Justify="Justify.Center">
+        @if(!_drawerOpen)
+        {
+            <MudItem xs="6">
+                <MudButton Variant="Variant.Filled" @onclick="DrawerToggle">View Allergens</MudButton>
+            </MudItem>
+        }
+        <MudItem xs="12" class="text-center" style="margin-left:20px;">
+            <MudTextField @bind-Value="FoodItem" Label="Check if food contains allergens" Variant="Variant.Outlined" style="margin-right: 300px;"></MudTextField>
+        </MudItem>
+    </MudGrid>
+</MudGrid>
 
 @code {
     public string FoodItem { get; set; }
     public int Spacing { get; set; } = 6;
     string hideAllergens = "Hide Allergens";
     string viewAllergens = "View Allergens";
-    bool _expanded = true;
+    bool _drawerOpen = false;
 
-    private void OnExpandCollapseClick() {
-        _expanded = !_expanded;
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
     }
 }

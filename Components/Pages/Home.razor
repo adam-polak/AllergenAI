@@ -2,14 +2,17 @@
 @rendermode InteractiveServer
 
 <MudGrid Justify="Justify.Center" Spacing="0" class="text-center">
-
-    @if(_drawerOpen)
+    @if(!_drawerOpen)
     {
+        <MudItem xs="6">
+            <MudButton Variant="Variant.Filled" @onclick="DrawerToggle">View Allergens</MudButton>
+        </MudItem>
+    } else {
         <MudItem>
             <MudButton Variant="Variant.Filled" @onclick="DrawerToggle" Style="@($"background-color:{Colors.Pink.Lighten5};")">Close Allergen List</MudButton>
             <br>
             <br>
-            <MudButton Variant="Variant.Filled" @onclick="DrawerToggle" Style="@($"background-color:{Colors.LightGreen.Lighten3};")">Add Allergen</MudButton>
+            <MudButton Variant="Variant.Filled" @onclick="AddAllergen" Style="@($"background-color:{Colors.LightGreen.Lighten3};")">Add Allergen</MudButton>
             <br>
             <table class="table">
                 <th>Allergens</th>
@@ -17,17 +20,9 @@
         </MudItem>
     }
 
-    <MudGrid Justify="Justify.Center">
-        @if(!_drawerOpen)
-        {
-            <MudItem xs="6">
-                <MudButton Variant="Variant.Filled" @onclick="DrawerToggle">View Allergens</MudButton>
-            </MudItem>
-        }
-        <MudItem xs="12" class="text-center" style="margin-left:20px;">
-            <MudTextField @bind-Value="FoodItem" Label="Check if food contains allergens" Variant="Variant.Outlined" style="margin-right: 300px;"></MudTextField>
-        </MudItem>
-    </MudGrid>
+    <MudItem xs="12" class="text-center" style="margin: auto; padding: 3% 20%;">
+        <MudTextField @bind-Value="FoodItem" Label="Check if food contains allergens" Variant="Variant.Outlined"></MudTextField>
+    </MudItem>
 </MudGrid>
 
 @code {
@@ -37,8 +32,13 @@
     string viewAllergens = "View Allergens";
     bool _drawerOpen = false;
 
-    void DrawerToggle()
+    private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private void AddAllergen()
+    {
+
     }
 }

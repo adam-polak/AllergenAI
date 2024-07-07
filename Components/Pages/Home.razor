@@ -20,16 +20,20 @@
         </MudItem>
     }
 
+
+
     <MudItem xs="12" class="text-center" style="margin: auto; padding: 3% 20%;">
-        <MudTextField @bind-Value="FoodItem" Label="Check if food contains allergens" Variant="Variant.Outlined"></MudTextField>
+        <style>
+            .green-border > .mud-input-control-input-container > .mud-input.mud-input-outlined > input:focus ~ .mud-input-outlined-border{border-color: rgb(91, 146, 91);}
+            .green-border-text > .mud-input-control-input-container > .mud-input:focus-within~label.mud-input-label.mud-input-label-inputcontrol{color: rgb(36, 138, 36);}
+        </style>    
+        <MudTextField @bind-Value="FoodItem" class="green-border green-border-text" Label="Check if food contains allergens" Variant="Variant.Outlined"></MudTextField>
     </MudItem>
 </MudGrid>
 
 @code {
-    public string FoodItem { get; set; }
-    public int Spacing { get; set; } = 6;
-    string hideAllergens = "Hide Allergens";
-    string viewAllergens = "View Allergens";
+    private static string LightGreen = Colors.LightGreen.Lighten3;
+    public string FoodItem { get; set; } = "";
     bool _drawerOpen = false;
 
     private void DrawerToggle()

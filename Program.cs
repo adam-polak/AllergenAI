@@ -12,7 +12,6 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
-builder.Services.Configure<GeminiHttpClientOptions>(builder.Configuration.GetSection("Gemini"));
 builder.Services.AddGemini();
 
 var app = builder.Build();

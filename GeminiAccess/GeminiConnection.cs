@@ -18,7 +18,6 @@ public class GeminiConnection
         var response = client.ExecuteAsync(new RestRequest(CreateSearchPrompt(food, allergens), Method.Get));
         if(response.Result.StatusCode != System.Net.HttpStatusCode.OK) return false;
         string result = response.Result.Content ?? "";
-        Console.WriteLine(result);
         return !(result.Count() == 0 || result.Substring(0, 1).Equals("n") || result.Substring(0, 1).Equals("N"));
     }
 

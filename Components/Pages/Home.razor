@@ -3,72 +3,101 @@
 @rendermode InteractiveServer
 @inject IConfiguration Config
 
+<style>
+    .green-border > .mud-input-control-input-container > .mud-input.mud-input-outlined > input:focus ~ .mud-input-outlined-border{border-color: rgb(91, 146, 91);}
+    .green-border-text > .mud-input-control-input-container > .mud-input:focus-within~label.mud-input-label.mud-input-label-inputcontrol{color: rgb(36, 138, 36);}
+</style>
+
 <MudGrid Justify="Justify.Center" Spacing="0" class="text-center">
-    @if(!_drawerOpen)
+    @if(!_allergenDrawer)
     {
         <MudItem xs="6">
-            <MudButton Variant="Variant.Filled" @onclick="DrawerToggle">View Allergens</MudButton>
+            <MudButton Variant="Variant.Filled" @onclick="AllergenDrawerToggle">View Allergens</MudButton>
         </MudItem>
     } else {
         <MudItem>
-            <MudButton Variant="Variant.Filled" @onclick="DrawerToggle" Style="@($"background-color:{Colors.Pink.Lighten5};")">Close Allergen List</MudButton>
+            <MudButton Variant="Variant.Filled" @onclick="AllergenDrawerToggle" Style="@($"background-color:{Colors.Pink.Lighten5};")">Close Allergen List</MudButton>
             <br>
-            <br>
-            <MudButton Variant="Variant.Filled" @onclick="AddAllergen" Style="@($"background-color:{Colors.LightGreen.Lighten3};")">Add Allergen</MudButton>
             <br>
             <table class="table">
-                <th>Allergens</th>
+                <th><h4>Allergens</h4></th>
+                <tr>
+                    <td>
+                        <form method="post" @onsubmit="AddAllergen">
+                            <MudTextField class="green-border green-border-text" @bind-Value="Allergen" Label="Add allergen" Variant="Variant.Outlined"></MudTextField>
+                        </form>
+                    </td>
+                </tr>
+                @foreach(string text in Allergens)
+                {
+                    <tr>
+                        <td style="font-size:1.5em;">@text</td>
+                    </tr>
+                }
             </table>
         </MudItem>
     }
 
     <MudItem xs="12" class="text-center" style="margin: auto; padding: 3% 20%;">
-        <style>
-            .green-border > .mud-input-control-input-container > .mud-input.mud-input-outlined > input:focus ~ .mud-input-outlined-border{border-color: rgb(91, 146, 91);}
-            .green-border-text > .mud-input-control-input-container > .mud-input:focus-within~label.mud-input-label.mud-input-label-inputcontrol{color: rgb(36, 138, 36);}
-        </style>
         <form method="post" @onsubmit="SearchForFood">
             <MudTextField @bind-Value="Food" class="green-border green-border-text" Label="Check if food contains allergens" Variant="Variant.Outlined"></MudTextField>
         </form>
     </MudItem>
 
     <MudItem xs="12" class="text-center">
-        @if(!PotentialAllergy) 
+        @if(_displayMessage)
         {
-            <MudIcon Icon="@Icons.Material.Filled.ThumbUpAlt"></MudIcon>
-        } else {
-            <MudIcon Icon="@Icons.Material.Filled.ThumbDownAlt"></MudIcon>
+            @if(!PotentialAllergy) 
+            {
+                <MudIcon Icon="@Icons.Material.Filled.ThumbUpAlt"></MudIcon>
+                <br>
+                <h5>You can eat @Food</h5>
+            } else {
+                <MudIcon Icon="@Icons.Material.Filled.ThumbDownAlt"></MudIcon>
+                <br>
+                <h5>@Food may contain some things you are allergic too</h5>
+            }
         }
     </MudItem>
 </MudGrid>
 
 @code {
     private static string LightGreen = Colors.LightGreen.Lighten3;
+
     public List<string> Allergens;
-    public bool PotentialAllergy;
     public string Food { get; set; } = "";
+    public string Allergen { get; set; } = "";
+
+    bool _allergenDrawer = false;
+    bool PotentialAllergy = false;
+    bool _displayMessage = false;
+
     GeminiConnection connection;
 
-    bool _drawerOpen = false;
-
     protected override async Task OnInitializedAsync() {
-        Allergens = ["Peanuts", "Jelly"];
+        Allergens = [];
         connection = new GeminiConnection(Config);
         return;
     }
 
     public void SearchForFood()
     {
-        if(Allergens.Count > 0) PotentialAllergy = connection.CheckForAllergens(Food, Allergens);
+        if(Allergens.Count > 0 && !Food.Equals("")) 
+        {
+            _displayMessage = true;
+            PotentialAllergy = connection.CheckForAllergens(Food, Allergens);
+        } else _displayMessage = false;
     }
 
-    private void DrawerToggle()
+    private void AllergenDrawerToggle()
     {
-        _drawerOpen = !_drawerOpen;
+        _allergenDrawer = !_allergenDrawer;
     }
 
     private void AddAllergen()
     {
-
+        if(!(Allergen.Equals("") || Allergens.Contains(Allergen))) Allergens.Add(Allergen);
+        _displayMessage = false;
+        Allergen = "";
     }
 }

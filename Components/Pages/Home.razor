@@ -1,5 +1,7 @@
 ﻿@page "/"
+@using AllergenAI.GeminiAccess
 @rendermode InteractiveServer
+@inject IConfiguration Config
 
 <MudGrid Justify="Justify.Center" Spacing="0" class="text-center">
     @if(!_drawerOpen)
@@ -33,8 +35,16 @@
 
 @code {
     private static string LightGreen = Colors.LightGreen.Lighten3;
+    public List<string> Allergens;
+    GeminiConnection connection;
     public string FoodItem { get; set; } = "";
     bool _drawerOpen = false;
+
+    protected override async Task OnInitializedAsync() {
+        Allergens = [];
+        connection = new GeminiConnection(Config);
+        return;
+    }
 
     private void DrawerToggle()
     {

@@ -1,40 +1,26 @@
 using RestSharp;
 using Newtonsoft.Json;
+using GenerativeAI.Models;
 
 namespace AllergenAI.GeminiAccess;
 
 public class GeminiConnection
 {
-
+    private readonly string apiKey;
+    GenerativeModel model;
     IConfiguration _configuration;
-    RestClient client;
 
     public GeminiConnection(IConfiguration configuration)
     {
         _configuration = configuration;
-        client = new RestClient(_configuration.GetConnectionString("Gemini") ?? "");
+        apiKey = _configuration.GetConnectionString("Key") ?? "";
+        model = new GenerativeModel(apiKey);
     }
 
-    public static string GeneratePayload(string text)
+    public async void CheckForAllergens(string food, List<string> allergens)
     {
-        var payload = new
-        {
-            contents = new
-            {
-                role = "USER",
-                parts = new object[] {
-                    new {text = text}
-                }
-            },
-            generation_config = new
-            {
-                temperature = 0.4,
-                top_p = 1,
-                top_k = 32,
-                max_output_tokens = 2048
-            }
-        };
-        return JsonConvert.SerializeObject(payload, Formatting.Indented);
+        var result = await model.GenerateContentAsync($"Does {food} contain peanuts?");
+        Console.WriteLine(result);
     }
 
 }

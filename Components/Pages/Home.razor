@@ -51,7 +51,7 @@
 
     public void SearchForFood()
     {
-        Console.WriteLine(GeminiConnection.GeneratePayload(Food));
+        connection.CheckForAllergens(Food, Allergens);
     }
 
     private void DrawerToggle()

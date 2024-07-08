@@ -28,22 +28,30 @@
         <style>
             .green-border > .mud-input-control-input-container > .mud-input.mud-input-outlined > input:focus ~ .mud-input-outlined-border{border-color: rgb(91, 146, 91);}
             .green-border-text > .mud-input-control-input-container > .mud-input:focus-within~label.mud-input-label.mud-input-label-inputcontrol{color: rgb(36, 138, 36);}
-        </style>    
-        <MudTextField @bind-Value="FoodItem" class="green-border green-border-text" Label="Check if food contains allergens" Variant="Variant.Outlined"></MudTextField>
+        </style>
+        <form method="post" @onsubmit="SearchForFood">
+            <MudTextField @bind-Value="Food" class="green-border green-border-text" Label="Check if food contains allergens" Variant="Variant.Outlined"></MudTextField>
+        </form>
     </MudItem>
 </MudGrid>
 
 @code {
     private static string LightGreen = Colors.LightGreen.Lighten3;
     public List<string> Allergens;
+    public string Food { get; set; } = "";
     GeminiConnection connection;
-    public string FoodItem { get; set; } = "";
+
     bool _drawerOpen = false;
 
     protected override async Task OnInitializedAsync() {
         Allergens = [];
         connection = new GeminiConnection(Config);
         return;
+    }
+
+    public void SearchForFood()
+    {
+        Console.WriteLine(GeminiConnection.GeneratePayload(Food));
     }
 
     private void DrawerToggle()

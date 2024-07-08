@@ -13,10 +13,9 @@ public class GeminiConnection
     {
         _configuration = configuration;
         client = new RestClient(_configuration.GetConnectionString("Gemini") ?? "");
-        Console.WriteLine(GeneratePayload("test"));
     }
 
-    private static string GeneratePayload(string text)
+    public static string GeneratePayload(string text)
     {
         var payload = new
         {
@@ -37,6 +36,5 @@ public class GeminiConnection
         };
         return JsonConvert.SerializeObject(payload, Formatting.Indented);
     }
-
 
 }

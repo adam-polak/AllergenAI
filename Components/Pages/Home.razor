@@ -40,7 +40,7 @@
 
     <MudItem xs="12" class="text-center" style="margin: auto; padding: 3% 20%;">
         <form method="post" @onsubmit="SearchForFood">
-            <MudTextField @bind-Value="Food" class="green-border green-border-text" Label="Check if food contains allergens" Variant="Variant.Outlined"></MudTextField>
+            <MudTextField @bind-Value="Food" class="green-border green-border-text small-label-text" HelperText="Check if a food contains your allergens" Label="Enter food" Variant="Variant.Outlined"></MudTextField>
         </form>
     </MudItem>
 
@@ -54,7 +54,6 @@
                 <h5>You can eat @Food</h5>
             } else {
                 <MudIcon Icon="@Icons.Material.Filled.ThumbDownAlt"></MudIcon>
-                <br>
                 <h5>@Food may contain some things you are allergic too</h5>
             }
         }

@@ -1,4 +1,7 @@
 using AllergenAI.Components;
+using Junaid.GoogleGemini.Net.Extensions;
+using Junaid.GoogleGemini.Net.Infrastructure;
+using Junaid.GoogleGemini.Net.Services.Interfaces;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +11,9 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddMudServices();
+
+builder.Services.Configure<GeminiHttpClientOptions>(builder.Configuration.GetSection("Gemini"));
+builder.Services.AddGemini();
 
 var app = builder.Build();
 
@@ -20,6 +26,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapGet("/prompt/{text}", async (string text, ITextService service) =>
+{
+    var result = await service.GenereateContentAsync(text);
+    return result.Text();
+});
 
 app.UseStaticFiles();
 app.UseAntiforgery();

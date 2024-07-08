@@ -31,25 +31,35 @@
             <MudTextField @bind-Value="Food" class="green-border green-border-text" Label="Check if food contains allergens" Variant="Variant.Outlined"></MudTextField>
         </form>
     </MudItem>
+
+    <MudItem xs="12" class="text-center">
+        @if(!PotentialAllergy) 
+        {
+            <MudIcon Icon="@Icons.Material.Filled.ThumbUpAlt"></MudIcon>
+        } else {
+            <MudIcon Icon="@Icons.Material.Filled.ThumbDownAlt"></MudIcon>
+        }
+    </MudItem>
 </MudGrid>
 
 @code {
     private static string LightGreen = Colors.LightGreen.Lighten3;
     public List<string> Allergens;
+    public bool PotentialAllergy;
     public string Food { get; set; } = "";
     GeminiConnection connection;
 
     bool _drawerOpen = false;
 
     protected override async Task OnInitializedAsync() {
-        Allergens = [];
+        Allergens = ["Peanuts", "Jelly"];
         connection = new GeminiConnection(Config);
         return;
     }
 
     public void SearchForFood()
     {
-        connection.CheckForAllergens(Food, Allergens);
+        if(Allergens.Count > 0) PotentialAllergy = connection.CheckForAllergens(Food, Allergens);
     }
 
     private void DrawerToggle()

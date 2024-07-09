@@ -24,7 +24,7 @@
                 <tr>
                     <td>
                         <form method="post" @onsubmit="AddAllergen">
-                            <MudTextField ShrinkLabel class="green-border green-border-text" @bind-Value="Add" Label="Add allergen" Variant="Variant.Outlined"></MudTextField>
+                            <MudTextField ShrinkLabel class="green-border green-border-text" @bind-Value="Add" Label="Add allergen" HelperText="(press enter/return)" Variant="Variant.Outlined"></MudTextField>
                         </form>
                     </td>
                     <td></td>
@@ -57,9 +57,12 @@
             {
                 <MudIcon Icon="@Icons.Material.Filled.ThumbUpAlt"></MudIcon>
                 <br>
+                <br>
                 <h5>You can eat @Food</h5>
             } else {
                 <MudIcon Icon="@Icons.Material.Filled.ThumbDownAlt"></MudIcon>
+                <br>
+                <br>
                 <h5>@Food may contain some things you are allergic too</h5>
             }
         }

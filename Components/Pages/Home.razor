@@ -1,5 +1,4 @@
 ﻿@page "/"
-@using AllergenAI.GeminiAccess
 @rendermode InteractiveServer
 @inject IConfiguration Config
 
@@ -21,17 +20,24 @@
             <br>
             <table class="table">
                 <th><h4>Allergens</h4></th>
+                <th></th>
                 <tr>
                     <td>
                         <form method="post" @onsubmit="AddAllergen">
-                            <MudTextField class="green-border green-border-text" @bind-Value="Allergen" Label="Add allergen" Variant="Variant.Outlined"></MudTextField>
+                            <MudTextField ShrinkLabel class="green-border green-border-text" @bind-Value="Add" Label="Add allergen" Variant="Variant.Outlined"></MudTextField>
                         </form>
                     </td>
+                    <td></td>
                 </tr>
-                @foreach(string text in Allergens)
+                @for(int i = 0; i < Allergens.Count; i++)
                 {
+                    Allergen allergen = Allergens.ElementAt(i);
+                    allergen.Id = i;
                     <tr>
-                        <td style="font-size:1.5em;">@text</td>
+                        <td style="font-size:1.5em;">@allergen.Label</td>
+                        <td>
+                            <MudIconButton style="margin-left: -100px;" Icon="@Icons.Material.Filled.Close" @onclick="() => DeleteAllergen(allergen)"></MudIconButton>
+                        </td>
                     </tr>
                 }
             </table>
@@ -63,29 +69,30 @@
 @code {
     private static string LightGreen = Colors.LightGreen.Lighten3;
 
-    public List<string> Allergens;
-    public string Food { get; set; } = "";
-    public string Allergen { get; set; } = "";
+    public int Count = 0;
+    public List<Allergen> Allergens = [];
+    public string Food = "";
+    public string Add = "";
 
-    bool _allergenDrawer = false;
+    bool _allergenDrawer = true;
     bool PotentialAllergy = false;
     bool _displayMessage = false;
 
     GeminiConnection connection;
 
     protected override async Task OnInitializedAsync() {
-        Allergens = [];
         connection = new GeminiConnection(Config);
         return;
     }
 
     public void SearchForFood()
     {
+        _displayMessage = false;
         if(Allergens.Count > 0 && !Food.Equals("")) 
         {
-            _displayMessage = true;
             PotentialAllergy = connection.CheckForAllergens(Food, Allergens);
-        } else _displayMessage = false;
+            _displayMessage = true;
+        }
     }
 
     private void AllergenDrawerToggle()
@@ -93,10 +100,24 @@
         _allergenDrawer = !_allergenDrawer;
     }
 
+    private void DeleteAllergen(Allergen allergen)
+    {
+        Allergens.RemoveAt(allergen.Id);
+    }
+
     private void AddAllergen()
     {
-        if(!(Allergen.Equals("") || Allergens.Contains(Allergen))) Allergens.Add(Allergen);
+        if(!(Add.Equals("") || ContainsLabel())) Allergens.Add(new Allergen() { Label = Add, Id = Allergens.Count - 1 });
         _displayMessage = false;
-        Allergen = "";
+        Add = "";
+    }
+
+    private bool ContainsLabel()
+    {
+        foreach(Allergen allergen in Allergens)
+        {
+            if(allergen.Label.Equals(allergen)) return true;
+        }
+        return false;
     }
 }
